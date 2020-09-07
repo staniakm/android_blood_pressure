@@ -48,7 +48,9 @@ data class Pressure(
     }
 
     override fun toString(): String {
-        return "${DateFormat.format("yyyy-MM-dd HH:mm:ss", date)}\nupperPressure=$upperPressure\nlowerPressure=$lowerPressure"
+        return """${DateFormat.format("yyyy-MM-dd HH:mm:ss", date)}
+                upperPressure=$upperPressure (${calculateUpper(upperPressure)})
+                lowerPressure=$lowerPressure (${calculateLower(lowerPressure)}"""
     }
 
 
