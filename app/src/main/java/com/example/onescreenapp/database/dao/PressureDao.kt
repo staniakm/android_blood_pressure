@@ -1,9 +1,10 @@
-package com.example.onescreenapp
+package com.example.onescreenapp.database.dao
 
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import com.example.onescreenapp.database.entity.Pressure
 
 @Dao
 interface PressureDao {

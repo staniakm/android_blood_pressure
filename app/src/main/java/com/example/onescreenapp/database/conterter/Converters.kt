@@ -1,4 +1,4 @@
-package com.example.onescreenapp
+package com.example.onescreenapp.database.conterter
 
 import androidx.room.TypeConverter
 import java.util.*

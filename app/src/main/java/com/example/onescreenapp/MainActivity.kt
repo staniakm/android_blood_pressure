@@ -5,6 +5,8 @@ import android.os.AsyncTask
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
+import com.example.onescreenapp.database.AppDatabase
+import com.example.onescreenapp.database.entity.Pressure
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 

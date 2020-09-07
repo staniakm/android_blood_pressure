@@ -1,10 +1,11 @@
-package com.example.onescreenapp
+package com.example.onescreenapp.database.entity
 
 import android.text.format.DateFormat
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
+import com.example.onescreenapp.database.conterter.Converters
 import java.util.*
 
 @Entity
