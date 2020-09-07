@@ -21,8 +21,8 @@ data class Pressure(
     }
 
     fun getSummary(): String {
-        println("\"Upper: $upperPressure\\nLower: $lowerPressure\"")
-        return "Upper: ${calculateUpper(upperPressure)}\nLower: ${calculateLower(lowerPressure)}"
+        return """Skurczowe: ${calculateUpper(upperPressure)}
+                |rozkurczowe: ${calculateLower(lowerPressure)}""".trimMargin()
     }
 
     private fun calculateLower(lowerPressure: Int): String {
@@ -49,8 +49,8 @@ data class Pressure(
 
     override fun toString(): String {
         return """${DateFormat.format("yyyy-MM-dd HH:mm:ss", date)}
-                upperPressure=$upperPressure (${calculateUpper(upperPressure)})
-                lowerPressure=$lowerPressure (${calculateLower(lowerPressure)}"""
+                |skurczowe=$upperPressure (${calculateUpper(upperPressure)})
+                |rozkurczowe=$lowerPressure (${calculateLower(lowerPressure)}""".trimMargin()
     }
 
 
