@@ -22,7 +22,7 @@ class MainActivity : AppCompatActivity() {
 
         val adapter: ArrayAdapter<*> = ArrayAdapter(
             this,
-            android.R.layout.simple_list_item_1,
+            R.layout.mytextview,
             pressureList
         )
         pressureListCtrl.adapter = adapter;
@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity() {
         AsyncTask.execute {
             instance?.pressureDao()
                 ?.getAll()
-                ?.sortedByDescending { x-> x.date }
+                ?.sortedByDescending { x -> x.date }
                 ?.let { pressureList.addAll(it) }
             adapter.notifyDataSetChanged();
         }
