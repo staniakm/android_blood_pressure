@@ -18,7 +18,15 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         val instance = AppDatabase.getInstance(this)
-        println("creating......")
+
+        upper.minValue = 90
+        upper.maxValue = 190
+        upper.value = 120
+
+
+        lower.minValue = 70
+        lower.maxValue = 110
+        lower.value = 80
 
         val adapter: ArrayAdapter<*> = ArrayAdapter(
             this,
@@ -41,8 +49,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         confirmBtn.setOnClickListener {
-            val upperPressure: Int = Integer.valueOf(upper.text.toString())
-            val lowerPressure: Int = Integer.valueOf(lower.text.toString())
+            val upperPressure: Int = upper.value
+            val lowerPressure: Int = lower.value
             val pressureResult =
                 Pressure(
                     upperPressure = upperPressure,
