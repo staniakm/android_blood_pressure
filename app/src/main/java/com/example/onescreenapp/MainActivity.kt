@@ -4,7 +4,6 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.os.AsyncTask
 import android.os.Bundle
-import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import com.example.onescreenapp.database.AppDatabase
 import com.example.onescreenapp.database.entity.Pressure
@@ -14,33 +13,19 @@ import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
-    private val pressureList = mutableListOf<Pressure>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         val instance = AppDatabase.getInstance(this)
-        val adapter: ArrayAdapter<*> = ArrayAdapter(
-            this,
-            R.layout.mytextview,
-            pressureList
-        )
-        pressureListCtrl.adapter = adapter
 
-        AsyncTask.execute {
-            instance?.pressureDao()
-                ?.getAll()
-                ?.sortedByDescending { x -> x.date }
-                ?.let { pressureList.addAll(it) }
-            adapter.notifyDataSetChanged()
-        }
 
         setUpperValues()
         setLowerValues()
 
-        diceRollerBtn.setOnClickListener {
-            val diceRoller = Intent(this, DiceRoller::class.java)
-            startActivity(diceRoller)
+        history.setOnClickListener {
+            val history = Intent(applicationContext, History::class.java)
+            startActivity(history)
         }
 
         confirmBtn.setOnClickListener {
@@ -52,10 +37,6 @@ class MainActivity : AppCompatActivity() {
                 )
             val result = if (pressureResult.correct()) {
                 savePressureResult(instance, pressureResult)
-                pressureList.add(pressureResult)
-                pressureList.sortByDescending { x -> x.date }
-
-                adapter.notifyDataSetChanged()
                 pressureResult.getSummary()
 
             } else {
