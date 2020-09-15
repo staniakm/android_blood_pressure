@@ -1,9 +1,9 @@
 package com.example.onescreenapp
 
 import android.os.AsyncTask
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ArrayAdapter
+import androidx.appcompat.app.AppCompatActivity
 import com.example.onescreenapp.database.AppDatabase
 import com.example.onescreenapp.database.entity.Pressure
 import kotlinx.android.synthetic.main.activity_history.*
@@ -22,13 +22,20 @@ class History : AppCompatActivity() {
             pressureList
         )
         pressureListCtrl.adapter = adapter
+        LoadHistory().execute(instance)
+            .get()
+            .let { pressureList.addAll(it) }
 
-        AsyncTask.execute {
-            instance?.pressureDao()
-                ?.getAll()
-                ?.sortedByDescending { x -> x.date }
-                ?.let { pressureList.addAll(it) }
-            adapter.notifyDataSetChanged()
-        }
+
     }
+}
+
+class LoadHistory : AsyncTask<AppDatabase, Unit, List<Pressure>>() {
+    override fun doInBackground(vararg p0: AppDatabase?): List<Pressure>? {
+        return p0[0]?.pressureDao()
+            ?.getAll()
+            ?.sortedByDescending { x -> x.date }
+            ?.toList()
+    }
+
 }

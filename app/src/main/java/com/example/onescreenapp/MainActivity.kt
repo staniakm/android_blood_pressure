@@ -2,8 +2,12 @@ package com.example.onescreenapp
 
 import android.app.AlertDialog
 import android.content.Intent
+import android.graphics.Color
 import android.os.AsyncTask
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
+import android.widget.NumberPicker
 import androidx.appcompat.app.AppCompatActivity
 import com.example.onescreenapp.database.AppDatabase
 import com.example.onescreenapp.database.entity.Pressure
@@ -17,18 +21,29 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val instance = AppDatabase.getInstance(this)
-
-
         setUpperValues()
         setLowerValues()
 
         history.setOnClickListener {
-            val history = Intent(applicationContext, History::class.java)
-            startActivity(history)
+            openHistory()
         }
+    }
 
-        confirmBtn.setOnClickListener {
+    private fun openHistory() {
+        val history = Intent(this, History::class.java)
+        startActivity(history)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_activity, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
+        if (item.itemId == R.id.save_btn){
+            val instance = AppDatabase.getInstance(this)
+
             val pressureResult =
                 Pressure(
                     upperPressure = upper.value,
@@ -45,6 +60,7 @@ class MainActivity : AppCompatActivity() {
 
             showResultDialog(result)
         }
+        return super.onOptionsItemSelected(item)
     }
 
     private fun savePressureResult(instance: AppDatabase?, pressureResult: Pressure) {
