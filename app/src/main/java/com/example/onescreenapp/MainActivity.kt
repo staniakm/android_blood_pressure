@@ -2,29 +2,29 @@ package com.example.onescreenapp
 
 import android.app.AlertDialog
 import android.content.Intent
-import android.graphics.Color
 import android.os.AsyncTask
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.NumberPicker
 import androidx.appcompat.app.AppCompatActivity
 import com.example.onescreenapp.database.AppDatabase
 import com.example.onescreenapp.database.entity.Pressure
-import kotlinx.android.synthetic.main.activity_main.*
+import com.example.onescreenapp.databinding.ActivityMainBinding
 import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
         setUpperValues()
         setLowerValues()
-
-        history.setOnClickListener {
+        binding.history.setOnClickListener {
             openHistory()
         }
     }
@@ -41,13 +41,13 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
-        if (item.itemId == R.id.save_btn){
+        if (item.itemId == R.id.save_btn) {
             val instance = AppDatabase.getInstance(this)
 
             val pressureResult =
                 Pressure(
-                    upperPressure = upper.value,
-                    lowerPressure = lower.value,
+                    upperPressure = binding.upper.value,
+                    lowerPressure = binding.lower.value,
                     date = Date()
                 )
             val result = if (pressureResult.correct()) {
@@ -83,14 +83,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setLowerValues() {
-        lower.minValue = 70
-        lower.maxValue = 110
-        lower.value = 80
+        binding.lower.minValue = 70
+        binding.lower.maxValue = 110
+        binding.lower.value = 80
     }
 
     private fun setUpperValues() {
-        upper.minValue = 90
-        upper.maxValue = 190
-        upper.value = 120
+        binding.upper.minValue = 90
+        binding.upper.maxValue = 190
+        binding.upper.value = 120
     }
 }

@@ -6,14 +6,17 @@ import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import com.example.onescreenapp.database.AppDatabase
 import com.example.onescreenapp.database.entity.Pressure
-import kotlinx.android.synthetic.main.activity_history.*
+import com.example.onescreenapp.databinding.ActivityHistoryBinding
 
 class History : AppCompatActivity() {
+
+    private lateinit var binding: ActivityHistoryBinding
+
     private val pressureList = mutableListOf<Pressure>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_history)
-
+        binding = ActivityHistoryBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         val instance = AppDatabase.getInstance(this)
         val adapter: ArrayAdapter<*> = ArrayAdapter(
@@ -21,7 +24,7 @@ class History : AppCompatActivity() {
             R.layout.mytextview,
             pressureList
         )
-        pressureListCtrl.adapter = adapter
+        binding.pressureListCtrl.adapter = adapter
         LoadHistory().execute(instance)
             .get()
             .let { pressureList.addAll(it) }
