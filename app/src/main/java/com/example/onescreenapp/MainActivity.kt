@@ -1,6 +1,8 @@
 package com.example.onescreenapp
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.app.AlertDialog.BUTTON_NEUTRAL
 import android.content.Intent
 import android.os.AsyncTask
 import android.os.Bundle
@@ -17,6 +19,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -26,6 +29,14 @@ class MainActivity : AppCompatActivity() {
         setLowerValues()
         binding.history.setOnClickListener {
             openHistory()
+        }
+
+        binding.lower.setOnValueChangedListener { _, _, i2 ->
+            binding.lowwerSummary.text = """Skurczowe: ${Pressure.calculateLower(i2)}"""
+        }
+
+        binding.upper.setOnValueChangedListener { _, _, i2 ->
+            binding.upperSummary.text = "Rozkurczowe: ${Pressure.calculateUpper(i2)}"
         }
     }
 
@@ -75,10 +86,7 @@ class MainActivity : AppCompatActivity() {
         val alertDialog: AlertDialog = AlertDialog.Builder(this@MainActivity).create()
         alertDialog.setTitle("Wynik")
         alertDialog.setMessage(result)
-        alertDialog.setButton(
-            AlertDialog.BUTTON_NEUTRAL,
-            "OK"
-        ) { dialog, _ -> dialog.dismiss() }
+        alertDialog.setButton(BUTTON_NEUTRAL, "OK") { dialog, _ -> dialog.dismiss() }
         alertDialog.show()
     }
 
