@@ -8,9 +8,11 @@ import android.os.AsyncTask
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import com.example.onescreenapp.database.AppDatabase
 import com.example.onescreenapp.database.entity.Pressure
+import com.example.onescreenapp.database.history.LoadLast10History
 import com.example.onescreenapp.databinding.ActivityMainBinding
 import java.util.*
 
@@ -18,7 +20,7 @@ import java.util.*
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-
+    private val pressureList = mutableListOf<Pressure>()
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,7 +29,7 @@ class MainActivity : AppCompatActivity() {
 
         setUpperValues()
         setLowerValues()
-        binding.history.setOnClickListener {
+        binding.historyBtn.setOnClickListener {
             openHistory()
         }
 
@@ -38,6 +40,21 @@ class MainActivity : AppCompatActivity() {
         binding.upper.setOnValueChangedListener { _, _, i2 ->
             binding.upperSummary.text = "Rozkurczowe: ${Pressure.calculateUpper(i2)}"
         }
+
+        loadHistory()
+    }
+
+    private fun loadHistory() {
+        val instance = AppDatabase.getInstance(this)
+        val adapter: ArrayAdapter<*> = ArrayAdapter(
+            this,
+            R.layout.mytextview,
+            pressureList
+        )
+        binding.historyLst.adapter = adapter
+        LoadLast10History().execute(instance)
+            .get()
+            .let { pressureList.addAll(it) }
     }
 
     private fun openHistory() {
@@ -102,3 +119,4 @@ class MainActivity : AppCompatActivity() {
         binding.upper.value = 120
     }
 }
+

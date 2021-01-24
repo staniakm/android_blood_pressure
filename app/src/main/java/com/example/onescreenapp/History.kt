@@ -1,11 +1,11 @@
 package com.example.onescreenapp
 
-import android.os.AsyncTask
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import com.example.onescreenapp.database.AppDatabase
 import com.example.onescreenapp.database.entity.Pressure
+import com.example.onescreenapp.database.history.LoadHistory
 import com.example.onescreenapp.databinding.ActivityHistoryBinding
 
 class History : AppCompatActivity() {
@@ -28,17 +28,6 @@ class History : AppCompatActivity() {
         LoadHistory().execute(instance)
             .get()
             .let { pressureList.addAll(it) }
-
-
     }
 }
 
-class LoadHistory : AsyncTask<AppDatabase, Unit, List<Pressure>>() {
-    override fun doInBackground(vararg p0: AppDatabase?): List<Pressure>? {
-        return p0[0]?.pressureDao()
-            ?.getAll()
-            ?.sortedByDescending { x -> x.date }
-            ?.toList()
-    }
-
-}
