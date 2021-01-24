@@ -1,11 +1,13 @@
 package com.example.onescreenapp.database.entity
 
+import android.annotation.SuppressLint
 import android.text.format.DateFormat
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
 import com.example.onescreenapp.database.conterter.Converters
+import java.text.SimpleDateFormat
 import java.util.*
 
 @Entity
@@ -23,6 +25,12 @@ data class Pressure(
     fun getSummary(): String {
         return """Skurczowe: ${calculateUpper(upperPressure)}
                 |rozkurczowe: ${calculateLower(lowerPressure)}""".trimMargin()
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    fun getDateString(): String {
+        val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm")
+        return simpleDateFormat.format(date)
     }
 
     companion object {

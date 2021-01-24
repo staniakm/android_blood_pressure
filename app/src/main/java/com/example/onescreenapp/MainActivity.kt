@@ -8,8 +8,9 @@ import android.os.AsyncTask
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.onescreenapp.adapter.HistoryListAdapter
 import com.example.onescreenapp.database.AppDatabase
 import com.example.onescreenapp.database.entity.Pressure
 import com.example.onescreenapp.database.history.LoadLast10History
@@ -20,7 +21,8 @@ import java.util.*
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private val pressureList = mutableListOf<Pressure>()
+    private lateinit var historyAdapter: HistoryListAdapter
+
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,24 +43,29 @@ class MainActivity : AppCompatActivity() {
             binding.upperSummary.text = "Rozkurczowe: ${Pressure.calculateUpper(i2)}"
         }
 
-        loadHistory()
+        prepareView()
+        loadData()
     }
 
-    private fun loadHistory() {
+    private fun prepareView() {
+        binding.historyRecycleView
+            .apply {
+                layoutManager = LinearLayoutManager(this@MainActivity)
+                historyAdapter = HistoryListAdapter()
+                adapter = historyAdapter
+            }
+    }
+
+    private fun loadData() {
         val instance = AppDatabase.getInstance(this)
-        val adapter: ArrayAdapter<*> = ArrayAdapter(
-            this,
-            R.layout.mytextview,
-            pressureList
-        )
-        binding.historyLst.adapter = adapter
+
         LoadLast10History().execute(instance)
             .get()
-            .let { pressureList.addAll(it) }
+            .let { historyAdapter.submitList(it) }
     }
 
     private fun openHistory() {
-        val history = Intent(this, History::class.java)
+        val history = Intent(this, HistoryActivity::class.java)
         startActivity(history)
     }
 
