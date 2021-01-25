@@ -42,7 +42,14 @@ class MainActivity : AppCompatActivity() {
         binding.upper.setOnValueChangedListener { _, _, i2 ->
             binding.upperSummary.text = "Rozkurczowe: ${Pressure.calculateUpper(i2)}"
         }
+    }
 
+    override fun onStart() {
+        super.onStart()
+        loadHistory()
+    }
+
+    private fun loadHistory(){
         prepareView()
         loadData()
     }
@@ -94,6 +101,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             showResultDialog(result)
+            loadHistory()
         }
         return super.onOptionsItemSelected(item)
     }
