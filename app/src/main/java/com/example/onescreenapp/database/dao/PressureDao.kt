@@ -12,8 +12,8 @@ interface PressureDao {
     @Query("SELECT * FROM pressure order by date desc limit 10")
     fun getLast10(): List<Pressure>
 
-    @Query("SELECT * FROM pressure")
-    fun getAll(): List<Pressure>
+    @Query("SELECT * FROM pressure order by date desc")
+    fun getAllOrderByDate(): List<Pressure>
 
     @Query("SELECT * FROM pressure WHERE id IN (:userIds)")
     fun loadAllByIds(userIds: IntArray): List<Pressure>

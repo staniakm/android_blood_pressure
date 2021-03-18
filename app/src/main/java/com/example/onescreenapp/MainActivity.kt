@@ -123,7 +123,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setLowerValues() {
-        binding.lower.minValue = 70
+        binding.lower.minValue = 60
         binding.lower.maxValue = 110
         binding.lower.value = 80
     }

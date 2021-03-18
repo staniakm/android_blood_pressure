@@ -19,7 +19,7 @@ data class Pressure(
     @ColumnInfo(name = "date") val date: Date
 ) {
     fun correct(): Boolean {
-        return !(upperPressure < 110 || lowerPressure < 70)
+        return !(upperPressure < 110 || lowerPressure < 60)
     }
 
     fun getSummary(): String {

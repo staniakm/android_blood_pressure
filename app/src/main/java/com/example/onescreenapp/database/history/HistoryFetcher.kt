@@ -16,8 +16,7 @@ class LoadLast10History : AsyncTask<AppDatabase, Unit, List<Pressure>>() {
 class LoadHistory : AsyncTask<AppDatabase, Unit, List<Pressure>>() {
     override fun doInBackground(vararg p0: AppDatabase?): List<Pressure>? {
         return p0[0]?.pressureDao()
-            ?.getAll()
-            ?.sortedByDescending { x -> x.date }
+            ?.getAllOrderByDate()
             ?.toList()
     }
 }
