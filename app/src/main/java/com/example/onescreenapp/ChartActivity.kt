@@ -1,105 +1,184 @@
 package com.example.onescreenapp
 
+import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
+import android.view.WindowManager
+import android.widget.SeekBar
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.anychart.AnyChart
-import com.anychart.chart.common.dataentry.DataEntry
-import com.anychart.chart.common.dataentry.ValueDataEntry
-import com.anychart.charts.Cartesian
-import com.anychart.data.Set
-import com.anychart.enums.Anchor
-import com.anychart.enums.MarkerType
-import com.anychart.enums.TooltipPositionMode
-import com.anychart.graphics.vector.Stroke
 import com.example.onescreenapp.database.AppDatabase
+import com.example.onescreenapp.database.entity.Pressure
 import com.example.onescreenapp.database.history.LoadLast30History
 import com.example.onescreenapp.databinding.ActivityChartBinding
+import com.github.mikephil.charting.charts.LineChart
+import com.github.mikephil.charting.components.AxisBase
+import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.components.YAxis.AxisDependency
+import com.github.mikephil.charting.components.YAxis.YAxisLabelPosition.INSIDE_CHART
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.formatter.ValueFormatter
+import com.github.mikephil.charting.utils.ColorTemplate
+import java.text.SimpleDateFormat
+import java.util.*
+
 
 class ChartActivity : AppCompatActivity() {
 
+    private var seekBarX: SeekBar? = null;
+    private var seekBarY: SeekBar? = null
+    private var tvX: TextView? = null;
+    private var tvY: TextView? = null
     private lateinit var binding: ActivityChartBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityChartBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        getWindow().setFlags(
+            WindowManager.LayoutParams.FLAG_FULLSCREEN,
+            WindowManager.LayoutParams.FLAG_FULLSCREEN
+        );
 
-        val cartesian = getCartesian()
 
-        val set = Set.instantiate()
-        set.data(loadData())
+        tvX = binding.tvXMax
+//        tvY = binding.tvYMax
 
-        cartesian.line(set.mapAs("{ x: 'x', value: 'upper' }"))
-            .apply {
-                name("Upper")
-                hovered().markers().enabled(true)
-                hovered().markers()
-                    .type(MarkerType.CIRCLE)
-                    .size(4.0)
-                tooltip()
-                    .position("right")
-                    .anchor(Anchor.LEFT_CENTER)
-                    .offsetX(5.0)
-                    .offsetY(5.0)
+        seekBarX = binding.seekBar1.apply {
+            progress = 45
+        }
+
+        val chart: LineChart = binding.chart1.apply {
+            // no description text
+            description.isEnabled = false
+
+            // enable touch gestures
+            setTouchEnabled(true)
+
+            dragDecelerationFrictionCoef = 0.9f
+
+            // enable scaling and dragging
+            isDragEnabled = true
+            setScaleEnabled(true)
+            setDrawGridBackground(false)
+            isHighlightPerDragEnabled = true
+            // set an alternative background color
+            setBackgroundColor(Color.WHITE)
+            setViewPortOffsets(10f, 10f, 20f, 20f)
+            // add data
+            this.loadData()
+
+            axisLeft.apply {
+                setPosition(INSIDE_CHART)
+                textColor = ColorTemplate.getHoloBlue()
+                setDrawGridLines(true)
+                isGranularityEnabled = true
+                axisMinimum = 50f
+                axisMaximum = 180f
+                yOffset = 10f
+                textColor = Color.rgb(255, 192, 56)
             }
-
-        cartesian.line(set.mapAs("{ x: 'x', value: 'lower' }"))
-            .apply {
-                name("Lower")
-                hovered().markers().enabled(true)
-                hovered().markers()
-                    .type(MarkerType.CIRCLE)
-                    .size(4.0)
-                tooltip()
-                    .position("right")
-                    .anchor(Anchor.LEFT_CENTER)
-                    .offsetX(5.0)
-                    .offsetY(5.0)
+            axisRight.apply {
+                isEnabled = false
             }
+        }
 
+        // add data
+        seekBarX!!.progress = 100
 
+        // get the legend (only possible after setting data)
 
-        binding.anyChartView.setChart(cartesian)
-    }
+        // get the legend (only possible after setting data)
+        chart.legend.apply {
+            isEnabled = true
+            this.xOffset = 10f
+            this.yOffset = 200f
+        }
 
-    private fun getCartesian(): Cartesian {
-        return AnyChart.line().apply {
-            animation(true)
-            padding(10.0, 20.0, 5.0, 20.0)
+        chart.xAxis.apply {
+            position = XAxis.XAxisPosition.BOTTOM_INSIDE
+        typeface = Typeface.MONOSPACE
+            textSize = 10f
+            textColor = Color.WHITE
+            setDrawAxisLine(false)
+            setDrawGridLines(true)
+            textColor = Color.rgb(255, 192, 56)
+            setCenterAxisLabels(true)
+            granularity = 24f // one hour
+            xOffset = 100f
 
-            crosshair().enabled(true)
-            crosshair()
-                .yLabel(true) // TODO ystroke
-                .yStroke(null as Stroke?, null, null, null as String?, null as String?)
-
-            tooltip().positionMode(TooltipPositionMode.POINT)
-
-            yAxis(0).title("Pressure").minorLabels()
-            xAxis(0).labels().padding(5.0, 5.0, 5.0, 5.0)
-
-            legend().enabled(true)
-            legend().fontSize(13.0)
-            legend().padding(0.0, 0.0, 10.0, 0.0)
+            valueFormatter = valueFormatter()
         }
     }
 
-    private fun loadData(): MutableList<DataEntry> {
+    private fun valueFormatter() = object : ValueFormatter() {
+        private val mFormat = SimpleDateFormat("HH:mm MM-dd", Locale.ENGLISH)
+        override fun getAxisLabel(value: Float, axis: AxisBase?): String {
+            return mFormat.format(value)
+        }
+
+        override fun getFormattedValue(value: Float, axis: AxisBase): String {
+            return mFormat.format(value)
+        }
+    }
+
+    private fun LineChart.loadData() {
+
+        val pressureData = loadDatabase()
+
+        val upper: List<Entry> = pressureData.map { entry(it.date, it.upperPressure) }.toList()
+        val lower: List<Entry> = pressureData.map { entry(it.date, it.lowerPressure) }.toList()
+
+        // create a dataset and give it a type
+        val set1 = LineDataSet(upper, "Upper").apply {
+            axisDependency = AxisDependency.LEFT
+            color = ColorTemplate.rgb("#015cdf")
+            valueTextColor = ColorTemplate.getHoloBlue()
+            lineWidth = 1.5f
+            setDrawCircles(false)
+            setDrawValues(true)
+            fillAlpha = 65
+            fillColor = ColorTemplate.rgb("#015cdf")
+            highLightColor = Color.rgb(1, 0, 210)
+            setDrawCircleHole(false)
+        }
+
+        val set2 = LineDataSet(lower, "Lower").apply {
+            axisDependency = AxisDependency.LEFT
+            color = ColorTemplate.rgb("#01b958")
+            valueTextColor = ColorTemplate.getHoloBlue()
+            lineWidth = 1.5f
+            setDrawCircles(false)
+            setDrawValues(true)
+            fillAlpha = 65
+            fillColor = ColorTemplate.rgb("#01b958")
+            highLightColor = Color.rgb(1, 0, 210)
+            setDrawCircleHole(false)
+        }
+        // create a data object with the data sets
+        val data = LineData(set1, set2)
+        data.setValueTextColor(Color.WHITE)
+        data.setValueTextSize(9f)
+
+        // set data
+        this.data = data
+    }
+
+    private fun entry(date: Date, pressure: Int): Entry {
+        val time = date.time.toFloat()
+        val press = pressure.toFloat()
+        return Entry(time, press)
+    }
+
+    private fun loadDatabase(): List<Pressure> {
         val instance = AppDatabase.getInstance(this)
 
         return LoadLast30History().execute(instance)
             .get()
-            .map { CustomDataEntry(it.getDateString(), it.upperPressure, it.lowerPressure) }
-            .toMutableList()
+
     }
 
-    private class CustomDataEntry internal constructor(
-        x: String?,
-        upper: Number?,
-        lower: Number?
-    ) :
-        ValueDataEntry(x, upper) {
-        init {
-            setValue("lower", lower)
-        }
-    }
 }
+
