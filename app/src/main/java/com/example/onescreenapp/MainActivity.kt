@@ -34,6 +34,9 @@ class MainActivity : AppCompatActivity() {
         binding.historyBtn.setOnClickListener {
             openHistory()
         }
+        binding.chartBtn.setOnClickListener {
+            openCharts()
+        }
 
         binding.lower.setOnValueChangedListener { _, _, i2 ->
             binding.lowwerSummary.text = """Skurczowe: ${Pressure.calculateLower(i2)}"""
@@ -74,6 +77,11 @@ class MainActivity : AppCompatActivity() {
     private fun openHistory() {
         val history = Intent(this, HistoryActivity::class.java)
         startActivity(history)
+    }
+
+    private fun openCharts() {
+        val charts = Intent(this, ChartActivity::class.java)
+        startActivity(charts)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
