@@ -28,23 +28,20 @@ import java.util.*
 class ChartActivity : AppCompatActivity() {
 
     private var seekBarX: SeekBar? = null;
-    private var seekBarY: SeekBar? = null
     private var tvX: TextView? = null;
-    private var tvY: TextView? = null
     private lateinit var binding: ActivityChartBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityChartBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        getWindow().setFlags(
+        window.setFlags(
             WindowManager.LayoutParams.FLAG_FULLSCREEN,
             WindowManager.LayoutParams.FLAG_FULLSCREEN
         );
 
 
         tvX = binding.tvXMax
-//        tvY = binding.tvYMax
 
         seekBarX = binding.seekBar1.apply {
             progress = 45
