@@ -38,6 +38,5 @@ class HistoryActivity : AppCompatActivity() {
             .get()
             .let { historyAdapter.submitList(it) }
     }
-
 }
 

@@ -18,14 +18,10 @@ data class Pressure(
     @ColumnInfo(name = "last_name") val lowerPressure: Int,
     @ColumnInfo(name = "date") val date: Date
 ) {
-    fun correct(): Boolean {
-        return !(upperPressure < 110 || lowerPressure < 60)
-    }
+    fun isValid() = upperPressure > 100 && lowerPressure > 60
 
-    fun getSummary(): String {
-        return """Skurczowe: ${calculateUpper(upperPressure)}
+    fun getSummary() = """Skurczowe: ${calculateUpper(upperPressure)}
                 |rozkurczowe: ${calculateLower(lowerPressure)}""".trimMargin()
-    }
 
     @SuppressLint("SimpleDateFormat")
     fun getDateString(): String {
@@ -59,10 +55,10 @@ data class Pressure(
     }
 
     override fun toString(): String {
-        return """${DateFormat.format("yyyy-MM-dd HH:mm:ss", date)}
+        return """
+                |${DateFormat.format("yyyy-MM-dd HH:mm:ss", date)}
                 |skurczowe=$upperPressure (${calculateUpper(upperPressure)})
-                |rozkurczowe=$lowerPressure (${calculateLower(lowerPressure)}""".trimMargin()
+                |rozkurczowe=$lowerPressure (${calculateLower(lowerPressure)}
+                |""".trimMargin()
     }
-
-
 }

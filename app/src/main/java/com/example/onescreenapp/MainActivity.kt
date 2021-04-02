@@ -92,7 +92,7 @@ class MainActivity : AppCompatActivity() {
                     lowerPressure = binding.lower.value,
                     date = Date()
                 )
-            val result = if (pressureResult.correct()) {
+            val result = if (pressureResult.isValid()) {
                 savePressureResult(instance, pressureResult)
                 pressureResult.getSummary()
 
