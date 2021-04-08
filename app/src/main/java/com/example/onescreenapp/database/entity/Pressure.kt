@@ -6,6 +6,8 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.onescreenapp.database.conterter.Converters
 import java.text.SimpleDateFormat
 import java.util.*
@@ -18,6 +20,9 @@ data class Pressure(
     @ColumnInfo(name = "last_name") val lowerPressure: Int,
     @ColumnInfo(name = "date") val date: Date
 ) {
+
+
+
     fun isValid() = upperPressure > 100 && lowerPressure > 60
 
     fun getSummary() = """Skurczowe: ${calculateUpper(upperPressure)}

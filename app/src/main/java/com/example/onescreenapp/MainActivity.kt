@@ -31,6 +31,7 @@ class MainActivity : AppCompatActivity() {
 
         setUpperValues()
         setLowerValues()
+        setPulseValues()
         binding.historyBtn.setOnClickListener {
             openHistory()
         }
@@ -98,6 +99,7 @@ class MainActivity : AppCompatActivity() {
                 Pressure(
                     upperPressure = binding.upper.value,
                     lowerPressure = binding.lower.value,
+                    pulse = binding.pulse.value,
                     date = Date()
                 )
             val result = if (pressureResult.isValid()) {
@@ -140,6 +142,12 @@ class MainActivity : AppCompatActivity() {
         binding.upper.minValue = 90
         binding.upper.maxValue = 190
         binding.upper.value = 120
+    }
+
+    private fun setPulseValues() {
+        binding.pulse.minValue = 40
+        binding.pulse.maxValue = 120
+        binding.pulse.value = 70
     }
 }
 

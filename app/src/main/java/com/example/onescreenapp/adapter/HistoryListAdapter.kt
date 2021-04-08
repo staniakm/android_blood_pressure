@@ -23,6 +23,7 @@ class HistoryListAdapter :
                 binding.dateLbl.text = this.getDateString()
                 binding.lowerLbl.text = this.lowerPressure.toString()
                 binding.upperLbl.text = this.upperPressure.toString()
+                binding.pulseLbl.text = this.pulse.toString()
             }
         }
     }

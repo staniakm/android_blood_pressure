@@ -99,33 +99,36 @@
             android:id="@+id/lowerDesc"
             android:layout_width="wrap_content"
             android:layout_height="19dp"
-            android:layout_marginStart="80dp"
-            android:layout_marginEnd="80dp"
             android:text="Rozkurczowe"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/upperDesc"
+            app:layout_constraintEnd_toEndOf="@+id/lower"
+            app:layout_constraintStart_toStartOf="@+id/lower"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/upperDesc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="80dp"
-            android:layout_marginEnd="80dp"
             android:text="Skurczowe"
-            app:layout_constraintEnd_toStartOf="@+id/lowerDesc"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/upper"
+            app:layout_constraintStart_toStartOf="@+id/upper"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/pulseDesc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Puls"
+            app:layout_constraintEnd_toEndOf="@+id/pulse"
+            app:layout_constraintStart_toStartOf="@+id/pulse"
             app:layout_constraintTop_toTopOf="parent" />
 
         <NumberPicker
             android:id="@+id/lower"
             android:layout_width="wrap_content"
             android:layout_height="104dp"
-            android:layout_marginStart="82dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="80dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/pulse"
             app:layout_constraintStart_toEndOf="@+id/upper"
             app:layout_constraintTop_toBottomOf="@+id/lowerDesc" />
 
@@ -133,12 +136,21 @@
             android:id="@+id/upper"
             android:layout_width="wrap_content"
             android:layout_height="104dp"
-            android:layout_marginStart="80dp"
+            android:layout_marginStart="24dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="82dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/lower"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/upperDesc"
+            app:layout_constraintVertical_bias="0.555" />
+
+        <NumberPicker
+            android:id="@+id/pulse"
+            android:layout_width="wrap_content"
+            android:layout_height="104dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="24dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/upperDesc" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
