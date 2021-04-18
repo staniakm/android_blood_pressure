@@ -2,8 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/save_btn"
-        android:title="Zapisz"
-        app:showAsAction="always"
-        />
+        android:id="@+id/history_menu_btn"
+        android:title="Historia" />
+    <item
+        android:id="@+id/chart_menu_btn"
+        android:title="Wykres"
+        app:showAsAction="never" />
 </menu>

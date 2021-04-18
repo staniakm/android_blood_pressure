@@ -32,11 +32,8 @@ class MainActivity : AppCompatActivity() {
         setUpperValues()
         setLowerValues()
         setPulseValues()
-        binding.historyBtn.setOnClickListener {
-            openHistory()
-        }
-        binding.chartBtn.setOnClickListener {
-            openCharts()
+        binding.saveBtn.setOnClickListener {
+            saveResult()
         }
 
         binding.lower.setOnValueChangedListener { _, _, i2 ->
@@ -53,7 +50,7 @@ class MainActivity : AppCompatActivity() {
         loadHistory()
     }
 
-    private fun loadHistory(){
+    private fun loadHistory() {
         prepareView()
         loadData()
     }
@@ -75,14 +72,22 @@ class MainActivity : AppCompatActivity() {
             .let { historyAdapter.submitList(it) }
     }
 
-    private fun openHistory() {
-        val history = Intent(this, HistoryActivity::class.java)
-        startActivity(history)
-    }
+    private fun saveResult() {
+        val pressureResult =
+            Pressure(
+                upperPressure = binding.upper.value,
+                lowerPressure = binding.lower.value,
+                pulse = binding.pulse.value,
+                date = Date()
+            )
+        val result = if (pressureResult.isValid()) {
+            savePressureResult(AppDatabase.getInstance(this), pressureResult)
+        } else {
+            "Niepoprawne dane"
+        }
 
-    private fun openCharts() {
-        val charts = Intent(this, ChartActivity::class.java)
-        startActivity(charts)
+        showResultDialog(result)
+        loadHistory()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -91,37 +96,21 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-
-        if (item.itemId == R.id.save_btn) {
-            val instance = AppDatabase.getInstance(this)
-
-            val pressureResult =
-                Pressure(
-                    upperPressure = binding.upper.value,
-                    lowerPressure = binding.lower.value,
-                    pulse = binding.pulse.value,
-                    date = Date()
-                )
-            val result = if (pressureResult.isValid()) {
-                savePressureResult(instance, pressureResult)
-                pressureResult.getSummary()
-
-            } else {
-                "Niepoprawne dane"
-            }
-
-            showResultDialog(result)
-            loadHistory()
+        if (item.itemId == R.id.history_menu_btn) {
+            startActivity(Intent(this, HistoryActivity::class.java))
+        } else if (item.itemId == R.id.chart_menu_btn) {
+            startActivity(Intent(this, ChartActivity::class.java))
         }
         return super.onOptionsItemSelected(item)
     }
 
-    private fun savePressureResult(instance: AppDatabase?, pressureResult: Pressure) {
+    private fun savePressureResult(instance: AppDatabase?, pressureResult: Pressure): String {
         AsyncTask.execute {
             instance?.runInTransaction {
                 instance.pressureDao().insertAll(pressureResult)
             }
         }
+        return pressureResult.getSummary()
     }
 
     private fun showResultDialog(result: String) {
